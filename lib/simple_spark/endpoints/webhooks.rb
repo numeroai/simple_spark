@@ -66,6 +66,14 @@ module SimpleSpark
         @client.call(method: :get, path: 'webhooks/events/samples', query_values: query_params)
       end
 
+      # Returns Returns a list of descriptions of the events, event types, and event fields that
+      # could be included in a webhooks batches
+      # @return [Array] a list of sample event hash objects
+      # @note See: https://developers.sparkpost.com/api/webhooks/#webhooks-get-events-documentation
+      def documentation
+        @client.call(method: :get, path: 'webhooks/events/documentation', query_values: {})
+      end
+
       # Delete a webhook
       # @param id [String] the ID
       # @note See: https://developers.sparkpost.com/api/#/reference/webhooks/update-and-delete
