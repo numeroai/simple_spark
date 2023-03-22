@@ -159,5 +159,9 @@ module SimpleSpark
     def recipient_lists
       Endpoints::RecipientLists.new(self)
     end
+
+    def recipient_validation
+      Endpoints::RecipientValidation.new(self)
+    end
   end
 end
