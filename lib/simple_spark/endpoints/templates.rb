@@ -68,6 +68,21 @@ module SimpleSpark
         @client.call(method: :post, path: "templates/#{id}/preview", body_values: substitutions, query_values: query_params)
       end
 
+      #
+      # Preview a Template inline
+      # @param values [Hash]
+      #
+      # @param values[:substitution_data] [Hash] the values to update the template with.
+      #    { "substitution_data" => { "name" => "Natalie", "age" => 35, "member" => true }
+      #
+      # @param values[:content] [Hash] the from, subject and html values. Must contain a key 'substitution_data'
+      #   { "content": { "from": "sandbox@sparkpostbox.com", "subject": "Summer deals for {{name}}", "html": "<b>Check out these deals {{name}}!</b>" } }
+      #
+      # @note See: https://developers.sparkpost.com/api/templates/#templates-post-preview-an-inline-templat
+      def preview_inline(values)
+        @client.call(method: :post, path: 'utils/content-previewer', body_values: values)
+      end
+
       # Delete a Template by its ID
       # @param id [String] the Unique Template ID to delete
       #
