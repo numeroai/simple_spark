@@ -88,6 +88,18 @@ module SimpleSpark
         @client.call(method: :get, path: 'metrics/deliverability/template', query_values: values)
       end
 
+      # Deliverability Metrics By Mailbox Provider
+      # @param values [Hash] the values to query with
+      # @note dates from and need to be sent using strftime('%Y-%m-%dT%H:%M'), for convenience if provided as Time, Date or DateTime objects they will be automatically converted
+      # @return [Array] containg Metrics results i.e. { "count_accepted": 66, "mailbox_provider": "Gmail" }
+      # @note Example:
+      #   client.metrics.deliverability_metrics_by_mailbox_provider(from: '2013-04-20T07:12', to: '2018-04-20T07:12', metrics: 'count_accepted', timezone: 'America/New_York', subaccounts: 'acc123')
+      # @note See: https://developers.sparkpost.com/api/metrics/#metrics-get-metrics-by-mailbox-provider
+      def deliverability_metrics_by_mailbox_provider(values)
+        format_date_time_values(values)
+        @client.call(method: :get, path: 'metrics/deliverability/mailbox-provider', query_values: values)
+      end
+
       # Time Series
       # @param values [Hash] the values to query with
       # @note dates from and need to be sent using strftime('%Y-%m-%dT%H:%M'), for convenience if provided as Time, Date or DateTime objects they will be automatically converted
