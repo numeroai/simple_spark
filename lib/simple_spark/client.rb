@@ -159,5 +159,9 @@ module SimpleSpark
     def recipient_lists
       Endpoints::RecipientLists.new(self)
     end
+
+    def sending_ips
+      Endpoints::SendingIps.new(self)
+    end
   end
 end
