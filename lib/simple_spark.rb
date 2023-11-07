@@ -15,4 +15,4 @@ require 'simple_spark/endpoints/recipient_lists'
 require 'simple_spark/endpoints/relay_webhooks'
 require 'simple_spark/endpoints/subaccounts'
 require 'simple_spark/endpoints/suppression_list'
-
+require 'simple_spark/endpoints/sending_ips'
