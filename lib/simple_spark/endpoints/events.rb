@@ -33,6 +33,8 @@ module SimpleSpark
       # @return [Array] a list of Event hash objects
       # @note https://developers.sparkpost.com/api/events/#events-get-search-for-message-events
       def search_with_pagination(params = {})
+        params[:cursor] = 'initial' unless params[:cursor]
+
         result = @client.call(method: :get, path: 'events/message', query_values: params, extract_results: false)
 
         # append cursor, to be passed into the next query
