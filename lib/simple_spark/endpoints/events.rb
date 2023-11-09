@@ -26,6 +26,14 @@ module SimpleSpark
       def search(params = {})
         @client.call(method: :get, path: 'events/message', query_values: params)
       end
+
+      # Perform a filtered search for message event data. The response is sorted by descending timestamp.
+      # @param params [String] Params to use in the search
+      # @return [Array] a list of Event hash objects
+      # @note https://developers.sparkpost.com/api/events/#events-get-search-for-message-events
+      def search_for_pagination(params = {})
+        @client.call(method: :get, path: 'events/message', query_values: params, extract_results: false)
+      end
     end
   end
 end
