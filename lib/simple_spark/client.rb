@@ -163,5 +163,9 @@ module SimpleSpark
     def sending_ips
       Endpoints::SendingIps.new(self)
     end
+
+    def api_keys
+      Endpoints::ApiKeys.new(self)
+    end
   end
 end
