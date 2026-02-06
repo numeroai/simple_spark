@@ -22,7 +22,7 @@ module SimpleSpark
       # Returns config details for the authenticated account
       # @return [Hash] a seed config hash object
       # @note See: https://developers.sparkpost.com/api/inline-seeds/
-      def get_seed_config()
+      def retrieve_seed_config()
         @client.call(method: :get, path: 'inline-seeds/config')
       end
 
@@ -44,7 +44,7 @@ module SimpleSpark
       # Gets the options for an authenticated account
       # @returns [Hash] a seed options hash object
       # @note See: https://developers.sparkpost.com/api/inline-seeds/
-      def get_options()
+      def retrieve_options()
         @client.call(method: :get, path: 'inline-seeds/options')
       end
 
