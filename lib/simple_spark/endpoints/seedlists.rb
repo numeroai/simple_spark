@@ -1,42 +1,33 @@
 module SimpleSpark
   module Endpoints
-    # Provides access to the /seeds and /inline-seeds endpoints
-    # @see https://developers.sparkpost.com/api/seed-list/ for more details on the /seeds endpoint
+    # Provides access to the  /inline-seeds endpoints
     # @see https://developers.sparkpost.com/api/inline-seeds/ for more details on the /inline-seeds endpoints
 
-    class Seedlists
+    class InlineSeeds
       attr_accessor :client
 
       def initialize(client)
         @client = client
       end
 
-
-      # Retrieve seed list
-      # @return [Array] a list of seed list emails
-      # @note See: https://developers.sparkpost.com/api/seed-list/
-      def retrieve_seeds()
-        @client.call(method: :get, path: 'seeds')
-      end
-
       # Returns config details for the authenticated account
       # @return [Hash] a seed config hash object
       # @note See: https://developers.sparkpost.com/api/inline-seeds/
-      def retrieve_seed_config()
+      def retrieve
         @client.call(method: :get, path: 'inline-seeds/config')
       end
 
       # Create seed config for the authenticated account.
       # @return [Hash] a seed config hash object
       # @note See: https://developers.sparkpost.com/api/inline-seeds/
-      def create_seed_config(values)
+      def create(values)
         @client.call(method: :post, path: 'inline-seeds/config', body_values: values)
       end
 
       # Create seed config for the authenticated account.
       # @return [Hash] a seed config hash object
       # @note See: https://developers.sparkpost.com/api/inline-seeds/
-      def update_seed_config(values)
+      def update(values)
         @client.call(method: :put, path: 'inline-seeds/config', body_values: values)
       end
 
@@ -44,7 +35,7 @@ module SimpleSpark
       # Gets the options for an authenticated account
       # @returns [Hash] a seed options hash object
       # @note See: https://developers.sparkpost.com/api/inline-seeds/
-      def retrieve_options()
+      def retrieve_options
         @client.call(method: :get, path: 'inline-seeds/options')
       end
 
