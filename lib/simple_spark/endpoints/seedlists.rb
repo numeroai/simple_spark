@@ -1,6 +1,8 @@
 module SimpleSpark
   module Endpoints
     # Provides access to the /seeds and /inline-seeds endpoints
+    # @see https://developers.sparkpost.com/api/seed-list/ for more details on the /seeds endpoint
+    # @see https://developers.sparkpost.com/api/inline-seeds/ for more details on the /inline-seeds endpoints
 
     class Seedlists
       attr_accessor :client
@@ -36,6 +38,21 @@ module SimpleSpark
       # @note See: https://developers.sparkpost.com/api/inline-seeds/
       def update_seed_config(values)
         @client.call(method: :put, path: 'inline-seeds/config', body_values: values)
+      end
+
+
+      # Gets the options for an authenticated account
+      # @returns [Hash] a seed options hash object
+      # @note See: https://developers.sparkpost.com/api/inline-seeds/
+      def get_options()
+        @client.call(method: :get, path: 'inline-seeds/options')
+      end
+
+      # Makes an update to the options for an authenticated account
+      # @return empty response body
+      # @note See: https://developers.sparkpost.com/api/inline-seeds/
+      def update_options(values)
+        @client.call(method: :put, path: 'inline-seeds/options', body_values: values)
       end
 
     end
