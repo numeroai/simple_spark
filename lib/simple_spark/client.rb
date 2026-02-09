@@ -163,5 +163,13 @@ module SimpleSpark
     def sending_ips
       Endpoints::SendingIps.new(self)
     end
+
+    def inline_seeds
+      Endpoints::InlineSeeds.new(self)
+    end
+
+    def seeds
+      Endpoints::Seeds.new(self)
+    end
   end
 end
