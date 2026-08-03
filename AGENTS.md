@@ -33,7 +33,7 @@ Endpoint idiom (see `endpoints/suppression_list.rb`):
 - RSpec: `bundle install && rake spec` (default rake task), or `rspec spec/path/to/file_spec.rb`.
 - Unit tests only — stub `Client#call`; no network calls, no WebMock/VCR.
 - Modify ENV in specs via `with_modified_env` (climate_control helper in `spec_helper.rb`).
-- There is no CI on this repo — run `rake spec` locally before pushing.
+- GitHub Actions runs RSpec for pull requests; run `rake spec` locally before pushing.
 
 ## PRs and Git
 
