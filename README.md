@@ -893,7 +893,32 @@ simple_spark.recipient_lists.delete(your_list_id)
 
 <a href="https://developers.sparkpost.com/api/recipient-lists/#recipient-lists-delete-delete-a-recipient-list" target="_blank">see SparkPost API Documentation</a>
 
+### Recipient Validation
+
+Validate email addresses using SparkPost's Recipient Validation API. The synchronous batch endpoint is not listed in SparkPost's public API docs; it requires Recipient Validation to be enabled on your account (403 otherwise).
+
+#### Batch
+
+Validates up to 1,000 addresses in one call and returns one verdict hash per input address, in input order. Addresses are not de-duplicated server-side.
+
+```ruby
+verdicts = simple_spark.recipient_validation.batch(['a@example.com', 'b@example.com'])
+# => [{ 'email' => 'a@example.com', 'valid' => true, 'result' => 'valid', 'reason' => '',
+#       'delivery_confidence' => 92, 'is_role' => false, 'is_disposable' => false,
+#       'is_free' => false, 'did_you_mean' => '' }, ...]
+```
+
+#### Single
+
+Validates one address (URL-encoded automatically).
+
+```ruby
+simple_spark.recipient_validation.single('a@example.com')
+```
+
 ## Changelog
+
+### 1.0.13 Add Recipient Validation endpoint (batch and single)
 
 ### 1.0.12 Fix param name on suppression list https://github.com/leadmachineapp/simple_spark/pull/27
 
