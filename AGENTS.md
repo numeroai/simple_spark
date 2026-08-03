@@ -1,6 +1,6 @@
 # Project Overview
 
-This is Numero's fork of the `simple_spark` gem (upstream: `jaymcaliley/simple_spark`) — a thin Ruby client for SparkPost's REST API v1, built on Excon. It is a public gem, but its primary consumer is `numeroai/numero_server`, whose Gemfile pins this repo's `master` branch directly. **Merging to `master` is effectively a release** — there is no gem publish step; consumers pick up changes via `bundle update simple_spark`.
+This is Numero's fork of the `simple_spark` gem (upstream: `jaymcaliley/simple_spark`) — a public, thin Ruby client for SparkPost's REST API v1, built on Excon.
 
 ## Structure
 
@@ -39,4 +39,4 @@ Endpoint idiom (see `endpoints/suppression_list.rb`):
 
 - Name branches `<github-handle>/kebab-case-branch`.
 - PR titles are a concise Title Case summary.
-- Keep changes additive and backward-compatible — `numero_server` tracks `master` directly, and other public consumers may exist.
+- Keep changes additive and backward-compatible for public consumers.
