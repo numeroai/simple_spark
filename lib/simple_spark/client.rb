@@ -160,6 +160,10 @@ module SimpleSpark
       Endpoints::RecipientLists.new(self)
     end
 
+    def recipient_validation
+      Endpoints::RecipientValidation.new(self)
+    end
+
     def sending_ips
       Endpoints::SendingIps.new(self)
     end
