@@ -15,7 +15,7 @@ module SimpleSpark
       # @note The API responds with results nested one level deeper than the standard
       #   envelope ({"results": {"results": [...]}}) so this method unwraps the inner level
       def batch(emails)
-        @client.call(method: :post, path: 'recipient-validation/batch', body_values: { emails: })['results']
+        @client.call(method: :post, path: 'recipient-validation/batch', body_values: { emails: emails })['results']
       end
 
       # Validate a single email address
