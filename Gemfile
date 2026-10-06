@@ -5,8 +5,8 @@ gemspec
 
 # CI pins runtime dependencies to specific ranges to verify the bounds the
 # gemspec advertises, e.g. JSON_VERSION='~> 2.7.0' EXCON_VERSION='~> 0.109.0'.
-gem 'json', ENV['JSON_VERSION'] if ENV['JSON_VERSION']
-gem 'excon', ENV['EXCON_VERSION'] if ENV['EXCON_VERSION']
+gem 'json', ENV['JSON_VERSION'] unless ENV['JSON_VERSION'].to_s.empty?
+gem 'excon', ENV['EXCON_VERSION'] unless ENV['EXCON_VERSION'].to_s.empty?
 
 group :development, :test do
   gem 'rake', '~> 13.4'
