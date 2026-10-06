@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'uri'
 
 describe SimpleSpark::Client do
   describe :initialize do
@@ -108,6 +109,81 @@ describe SimpleSpark::Client do
         specify { expect(client.recipient_validation.class).to eq(SimpleSpark::Endpoints::RecipientValidation) }
       end
 
+    end
+  end
+
+  describe :call do
+    let(:client) { SimpleSpark::Client.new(api_key: 'mykey', subaccount_id: '42') }
+
+    before do
+      client.instance_variable_set(:@session, Excon.new('https://api.sparkpost.com', mock: true))
+    end
+
+    after do
+      Excon.stubs.clear
+    end
+
+    it 'sends JSON, query values, and authorization headers through Excon' do
+      request = nil
+      Excon.stub({ method: :post, path: '/api/v1/transmissions' }, lambda { |params|
+        request = params
+        { status: 200, body: '{"results":{"id":"transmission-id"}}' }
+      })
+
+      result = client.call(method: :post, path: 'transmissions',
+                           body_values: { content: { subject: 'hello' } },
+                           query_values: { num_rcpt_errors: 2 })
+
+      expect(result).to eq('id' => 'transmission-id')
+      expect(JSON.parse(request[:body])).to eq('content' => { 'subject' => 'hello' })
+      query = request[:query].is_a?(Hash) ? request[:query] : URI.decode_www_form(request[:query]).to_h
+      expect(query.transform_keys(&:to_s).transform_values(&:to_s)).to eq('num_rcpt_errors' => '2')
+      expect(request[:headers]).to include('Authorization' => 'mykey',
+                                           'X-MSYS-SUBACCOUNT' => '42',
+                                           'Content-Type' => 'application/json')
+    end
+
+    it 'returns the full response when result extraction is disabled' do
+      response_body = '{"results":{"count":1},"total":5}'
+      Excon.stub({ method: :get, path: '/api/v1/metrics' }, { status: 200, body: response_body })
+
+      expect(client.call(method: :get, path: 'metrics', extract_results: false)).to eq(
+        'results' => { 'count' => 1 }, 'total' => 5
+      )
+    end
+
+    it 'maps API errors to the existing exception classes' do
+      errors = [{ 'message' => 'Too many requests', 'code' => 123 }]
+      Excon.stub({ method: :get, path: '/api/v1/events' },
+                 { status: 429, body: JSON.generate('errors' => errors) })
+
+      expect { client.call(method: :get, path: 'events') }.to raise_error(
+        SimpleSpark::Exceptions::ThrottleLimitExceeded, 'Too many requests 429 (Error Code: 123)'
+      )
+    end
+
+    it 'returns an empty hash for a no-content response' do
+      Excon.stub({ method: :delete, path: '/api/v1/transmissions' }, { status: 204, body: '' })
+
+      expect(client.call(method: :delete, path: 'transmissions')).to eq({})
+    end
+
+    it 'maps an HTTP 504 response to the gateway timeout exception' do
+      Excon.stub({ method: :get, path: '/api/v1/events' }, { status: 504, body: '' })
+
+      expect { client.call(method: :get, path: 'events') }.to raise_error(
+        SimpleSpark::Exceptions::GatewayTimeoutExceeded
+      )
+    end
+
+    it 'maps an Excon timeout to the gateway timeout exception' do
+      Excon.stub({ method: :get, path: '/api/v1/events' }, lambda { |_params|
+        raise Excon::Errors::Timeout, 'timed out'
+      })
+
+      expect { client.call(method: :get, path: 'events') }.to raise_error(
+        SimpleSpark::Exceptions::GatewayTimeoutExceeded
+      )
     end
   end
 end
