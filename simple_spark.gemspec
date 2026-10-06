@@ -22,4 +22,5 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'json', '>= 1.7.7', '< 4.0'
   spec.add_dependency 'excon', '>= 0.16.0', '< 2.0'
+  spec.add_dependency 'logger'
 end
