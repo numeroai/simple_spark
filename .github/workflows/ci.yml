@@ -8,38 +8,23 @@ permissions:
 
 jobs:
   rspec:
-    name: rspec (ruby ${{ matrix.ruby }}, ${{ matrix.deps }} deps)
+    name: rspec (${{ matrix.gemfile }})
     runs-on: ubuntu-latest
     timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
-        ruby: ['3.4', '4.0']
-        deps: ['oldest', 'latest']
-        include:
-          # Oldest runtime dependency ranges still exercised in CI. The gemspec
-          # advertises json >= 1.7.7 and excon >= 0.16.0; these are the oldest
-          # releases that install cleanly on supported Rubies.
-          - deps: oldest
-            json_version: '~> 2.7.0'
-            excon_version: '~> 0.109.0'
-          # Newest allowed ranges: json 3.x and excon 1.x.
-          - deps: latest
-            json_version: ''
-            excon_version: ''
-    env:
-      JSON_VERSION: ${{ matrix.json_version }}
-      EXCON_VERSION: ${{ matrix.excon_version }}
+        gemfile: ['Gemfile', 'gemfiles/compatibility.gemfile']
 
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: ${{ matrix.ruby }}
+          ruby-version: '4.0'
           bundler: latest
-          bundler-cache: true
-      - run: bundle exec ruby -rjson -rexcon -e 'puts "json " + JSON::VERSION + ", excon " + Excon::VERSION'
-      - run: bundle exec rake spec
+      - run: bundle install --gemfile=${{ matrix.gemfile }}
+      - run: bundle exec --gemfile=${{ matrix.gemfile }} ruby -rjson -rexcon -e 'puts "json " + JSON::VERSION + ", excon " + Excon::VERSION'
+      - run: bundle exec --gemfile=${{ matrix.gemfile }} rake spec
 
   build:
     runs-on: ubuntu-latest
@@ -48,6 +33,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.4'
+          ruby-version: '4.0'
           bundler: latest
       - run: gem build simple_spark.gemspec

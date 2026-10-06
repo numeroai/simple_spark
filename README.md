@@ -8,6 +8,8 @@ The simplest and cleanest way to access the SparkPost API from Ruby or from Rail
 
 ## Installation
 
+Requires Ruby 4.0 or newer.
+
 Add this line to your application's Gemfile:
 
 ```ruby
