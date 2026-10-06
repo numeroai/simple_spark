@@ -19,6 +19,6 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
 
-  spec.add_dependency 'json', '>= 1.7.7', '< 3.0'
+  spec.add_dependency 'json', '>= 1.7.7', '< 4.0'
   spec.add_dependency 'excon', '>= 0.16.0', '< 2.0'
 end
