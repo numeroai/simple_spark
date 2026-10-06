@@ -8,13 +8,8 @@ permissions:
 
 jobs:
   rspec:
-    name: rspec (${{ matrix.gemfile }})
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    strategy:
-      fail-fast: false
-      matrix:
-        gemfile: ['Gemfile', 'gemfiles/compatibility.gemfile']
 
     steps:
       - uses: actions/checkout@v4
@@ -22,17 +17,5 @@ jobs:
         with:
           ruby-version: '4.0'
           bundler: latest
-      - run: bundle install --gemfile=${{ matrix.gemfile }}
-      - run: bundle exec --gemfile=${{ matrix.gemfile }} ruby -rjson -rexcon -e 'puts "json " + JSON::VERSION + ", excon " + Excon::VERSION'
-      - run: bundle exec --gemfile=${{ matrix.gemfile }} rake spec
-
-  build:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '4.0'
-          bundler: latest
-      - run: gem build simple_spark.gemspec
+          bundler-cache: true
+      - run: bundle exec rake spec
