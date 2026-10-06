@@ -185,5 +185,100 @@ describe SimpleSpark::Client do
         SimpleSpark::Exceptions::GatewayTimeoutExceeded
       )
     end
+
+    it 'round-trips nested symbol and string keys, numbers, booleans, nil, and arrays' do
+      request = nil
+      Excon.stub({ method: :post, path: '/api/v1/transmissions' }, lambda { |params|
+        request = params
+        { status: 200, body: '{"results":{}}' }
+      })
+
+      body = {
+        options: { open_tracking: true, click_tracking: false, start_time: nil },
+        'recipients' => [{ address: { email: 'a@example.com' } }, { 'address' => { 'email' => 'b@example.com' } }],
+        content: { subject: 'hello', 'template_id' => 'welcome' },
+        num_rcpt_errors: 3,
+        rate: 1.5
+      }
+
+      client.call(method: :post, path: 'transmissions', body_values: body)
+
+      expect(JSON.parse(request[:body])).to eq(
+        'options' => { 'open_tracking' => true, 'click_tracking' => false, 'start_time' => nil },
+        'recipients' => [{ 'address' => { 'email' => 'a@example.com' } }, { 'address' => { 'email' => 'b@example.com' } }],
+        'content' => { 'subject' => 'hello', 'template_id' => 'welcome' },
+        'num_rcpt_errors' => 3,
+        'rate' => 1.5
+      )
+    end
+
+    it 'encodes UTF-8 body content without warnings' do
+      request = nil
+      Excon.stub({ method: :post, path: '/api/v1/transmissions' }, lambda { |params|
+        request = params
+        { status: 200, body: '{"results":{}}' }
+      })
+
+      client.call(method: :post, path: 'transmissions', body_values: { content: { subject: 'héllo ✓ 日本' } })
+
+      expect(request[:body].encoding).to eq(Encoding::UTF_8)
+      expect(JSON.parse(request[:body])).to eq('content' => { 'subject' => 'héllo ✓ 日本' })
+    end
+
+    it 'sends no body for an empty body hash' do
+      request = nil
+      Excon.stub({ method: :get, path: '/api/v1/metrics' }, lambda { |params|
+        request = params
+        { status: 200, body: '{"results":{}}' }
+      })
+
+      client.call(method: :get, path: 'metrics', body_values: {})
+
+      expect(request).not_to have_key(:body)
+    end
+
+    it 'surfaces duplicate-key bodies according to the installed json version' do
+      Excon.stub({ method: :post, path: '/api/v1/transmissions' }, { status: 200, body: '{"results":{}}' })
+      body = { content: { subject: 'a' }, 'content' => { subject: 'b' } }
+      call = -> { client.call(method: :post, path: 'transmissions', body_values: body) }
+
+      if Gem::Version.new(JSON::VERSION) >= Gem::Version.new('3.0')
+        expect(&call).to raise_error(JSON::GeneratorError)
+      else
+        expect(&call).not_to raise_error
+      end
+    end
+
+    it 'returns array results unchanged' do
+      Excon.stub({ method: :get, path: '/api/v1/suppression-list' },
+                 { status: 200, body: '{"results":[{"recipient":"a@example.com"},{"recipient":"b@example.com"}]}' })
+
+      expect(client.call(method: :get, path: 'suppression-list')).to eq(
+        [{ 'recipient' => 'a@example.com' }, { 'recipient' => 'b@example.com' }]
+      )
+    end
+
+    it 'returns an empty hash when a success response has no results key' do
+      Excon.stub({ method: :get, path: '/api/v1/metrics' }, { status: 200, body: '{"links":[]}' })
+
+      expect(client.call(method: :get, path: 'metrics')).to eq({})
+    end
+
+    it 'maps a 400 response with a description to BadRequest' do
+      errors = [{ 'message' => 'Invalid recipient', 'code' => 5001, 'description' => 'Missing email' }]
+      Excon.stub({ method: :post, path: '/api/v1/transmissions' },
+                 { status: 400, body: JSON.generate('errors' => errors) })
+
+      expect { client.call(method: :post, path: 'transmissions', body_values: { a: 1 }) }.to raise_error(
+        SimpleSpark::Exceptions::BadRequest, 'Invalid recipient 400 (Error Code: 5001): Missing email'
+      ) { |e| expect(e.object).to eq(errors) }
+    end
+
+    it 'raises a JSON parser error for a non-JSON response body' do
+      Excon.stub({ method: :get, path: '/api/v1/events' },
+                 { status: 502, body: '<html><body>Bad Gateway</body></html>' })
+
+      expect { client.call(method: :get, path: 'events') }.to raise_error(JSON::ParserError)
+    end
   end
 end
