@@ -1,20 +1,18 @@
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in sparkpost-snap.gemspec
+# Specify the gem's runtime dependencies in simple_spark.gemspec.
 gemspec
 
 group :development, :test do
-  gem 'bundler', '~> 1.6'
-  gem 'rake', '~> 0.9.6'
-  gem 'rspec', '~> 3.4.0'
-  gem 'rspec-nc', '~> 0'
-  gem 'climate_control', '~> 0'
+  gem 'rake', '~> 13.4'
+  gem 'rspec', '~> 3.13'
+  gem 'rspec-nc', '~> 0.3'
+  gem 'climate_control', '~> 1.2'
 end
 
 group :development do
-  gem 'guard', '~> 2.13'
-  gem 'guard-rspec', '~> 4.6.4'
-  gem 'pry', '~> 0'
-  gem 'pry-remote', '~> 0'
-  gem 'pry-nav', '~> 0'
+  gem 'guard', '~> 2.20'
+  gem 'guard-rspec', '~> 4.7'
+  gem 'pry', '~> 0.16'
+  gem 'pry-remote', '~> 0.1'
 end

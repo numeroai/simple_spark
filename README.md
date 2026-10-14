@@ -1,12 +1,14 @@
 # SimpleSpark
 
-[![Build Status](https://travis-ci.org/leadmachineapp/simple_spark.png?branch=master)](https://travis-ci.org/leadmachineapp/simple_spark) [![Gem Version](https://badge.fury.io/rb/simple_spark.svg)](https://badge.fury.io/rb/simple_spark)
+[![CI](https://github.com/numeroai/simple_spark/actions/workflows/ci.yml/badge.svg)](https://github.com/numeroai/simple_spark/actions/workflows/ci.yml) [![Gem Version](https://badge.fury.io/rb/simple_spark.svg)](https://badge.fury.io/rb/simple_spark)
 
 ## What?
 
 The simplest and cleanest way to access the SparkPost API from Ruby or from Rails.
 
 ## Installation
+
+Requires Ruby 4.0 or newer.
 
 Add this line to your application's Gemfile:
 

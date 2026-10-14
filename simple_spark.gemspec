@@ -12,6 +12,7 @@ Gem::Specification.new do |spec|
   spec.description   = 'An alternative to the official SparkPost Ruby gem'
   spec.homepage      = ''
   spec.license       = 'MIT'
+  spec.required_ruby_version = '>= 4.0'
 
   spec.files         = `git ls-files -z`.split("\x0")
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
@@ -19,6 +20,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
 
-  spec.add_dependency 'json', '>= 1.7.7', '< 3.0'
+  spec.add_dependency 'json', '>= 1.7.7', '< 4.0'
   spec.add_dependency 'excon', '>= 0.16.0', '< 2.0'
+  spec.add_dependency 'logger'
 end
